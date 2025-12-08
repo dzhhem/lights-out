@@ -1,15 +1,16 @@
 import Cell from "./Cell";
 
-const GameGrid = () => {
+interface GameGridProps {
+	grid: boolean[];
+	onCellClick: (_index: number) => void;
+}
+
+const GameGrid = ({ grid, onCellClick }: GameGridProps) => {
 	return (
 		<div className="bg-white p-8 rounded-lg shadow-lg">
-			<div className="grid grid-cols-5 gap-2">
-				{Array.from({ length: 25 }).map((_, i) => (
-					<Cell
-						key={i}
-						onClick={() => console.log("Click cell", i)}
-						isOn={i % 2 === 0}
-					/>
+			<div className="grid grid-cols-4 gap-2">
+				{grid.map((isOn, i) => (
+					<Cell key={i} onClick={() => onCellClick(i)} isOn={isOn} />
 				))}
 			</div>
 		</div>

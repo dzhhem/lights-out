@@ -1,23 +1,40 @@
-import { useState } from "react";
+import usePageState from "./hooks/usePageState";
+import useGameLogic from "./hooks/useGameLogic";
 import StartPage from "./pages/StartPage";
 import GamePage from "./pages/GamePage";
 import ResultsPage from "./pages/ResultsPage";
 
-type Page = "start" | "game" | "results";
-
 const App = () => {
-	const [currentPage, setCurrentPage] = useState<Page>("start");
+	const { currentPage, lastResult, goToGame, goToResults, goToStart } =
+		usePageState();
 
-	const handleStart = () => setCurrentPage("game");
-	const handleFinish = () => setCurrentPage("results");
-	const handleRestart = () => setCurrentPage("start");
+	const gameLogic = useGameLogic();
+
+	const handleStartGame = () => {
+		gameLogic.resetGame();
+		goToGame();
+	};
+
+	const handleRestart = () => {
+		gameLogic.resetGame();
+		goToStart();
+	};
 
 	return (
 		<>
-			{currentPage === "start" && <StartPage onStart={handleStart} />}
-			{currentPage === "game" && <GamePage onFinish={handleFinish} />}
-			{currentPage === "results" && (
-				<ResultsPage onRestart={handleRestart} />
+			{currentPage === "start" && <StartPage onStart={handleStartGame} />}
+			{currentPage === "game" && (
+				<GamePage
+					gameLogic={gameLogic}
+					onGameWon={() => goToResults(gameLogic.steps)}
+					onGameLost={() => goToResults(gameLogic.steps)}
+				/>
+			)}
+			{currentPage === "results" && lastResult && (
+				<ResultsPage
+					onRestart={handleRestart}
+					steps={lastResult.steps}
+				/>
 			)}
 		</>
 	);
