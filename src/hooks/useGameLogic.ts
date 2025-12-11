@@ -1,84 +1,144 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 
-const getNeighbors = (index: number): number[] => {
-	const neighbors: number[] = [];
-	const COLS = 4;
-	const row = Math.floor(index / COLS);
-	const col = index % COLS;
+const useGameLogic = (size = 4, timer = 0) => {
+	const COLS = size;
 
-	if (row > 0) neighbors.push(index - COLS);
-	if (row < 3) neighbors.push(index + COLS);
-	if (col > 0) neighbors.push(index - 1);
-	if (col < 3) neighbors.push(index + 1);
+	const getNeighbors = useCallback(
+		(index: number): number[] => {
+			const neighbors: number[] = [];
+			const row = Math.floor(index / COLS);
+			const col = index % COLS;
 
-	return neighbors;
-};
+			if (row > 0) neighbors.push(index - COLS);
+			if (row < COLS - 1) neighbors.push(index + COLS);
+			if (col > 0) neighbors.push(index - 1);
+			if (col < COLS - 1) neighbors.push(index + 1);
 
-const useGameLogic = () => {
+			return neighbors;
+		},
+		[COLS],
+	);
+
 	const [grid, setGrid] = useState<boolean[]>([]);
 	const [steps, setSteps] = useState(0);
 	const [isWon, setIsWon] = useState(false);
+	const [isLost, setIsLost] = useState(false);
+	const [timeLeft, setTimeLeft] = useState(timer);
 
-	const createInitialGrid = useCallback(() => {
-		const solvedGrid = Array(16).fill(false);
-		const shuffleCount = Math.floor(Math.random() * 5) + 6;
-		const newGrid = [...solvedGrid];
+	const initialGridRef = useRef<boolean[] | null>(null);
+
+	const createRandomGrid = useCallback(() => {
+		const len = size * size;
+
+		const applyClick = (grid: boolean[], index: number) => {
+			grid[index] = !grid[index];
+			const neighbors = getNeighbors(index);
+			neighbors.forEach((n) => {
+				grid[n] = !grid[n];
+			});
+		};
+
+		const newGrid = Array(len).fill(false);
+
+		const minClicks = Math.max(3, Math.floor(size * 1.5));
+		const maxClicks = size * size - 1;
+		const shuffleCount =
+			Math.floor(Math.random() * (maxClicks - minClicks + 1)) + minClicks;
+
+		const clickCounts = Array(len).fill(0);
 
 		for (let i = 0; i < shuffleCount; i++) {
-			const randomIndex = Math.floor(Math.random() * 16);
+			const randomIndex = Math.floor(Math.random() * len);
+			clickCounts[randomIndex]++;
+		}
 
-			newGrid[randomIndex] = !newGrid[randomIndex];
+		for (let i = 0; i < len; i++) {
+			if (clickCounts[i] % 2 === 1) {
+				applyClick(newGrid, i);
+			}
+		}
 
-			const neighbors = getNeighbors(randomIndex);
-			neighbors.forEach((neighborIndex) => {
-				newGrid[neighborIndex] = !newGrid[neighborIndex];
-			});
+		if (newGrid.every((cell) => !cell)) {
+			const forcedIndex = Math.floor(Math.random() * len);
+			applyClick(newGrid, forcedIndex);
 		}
 
 		return newGrid;
-	}, []);
+	}, [getNeighbors, size]);
 
-	useEffect(() => {
-		setGrid(createInitialGrid());
-	}, [createInitialGrid]);
-
-	const initializeGrid = useCallback(() => {
-		setGrid(createInitialGrid());
+	const startNewGame = useCallback(() => {
+		const g = createRandomGrid();
+		initialGridRef.current = [...g];
+		setGrid(g);
 		setSteps(0);
 		setIsWon(false);
-	}, [createInitialGrid]);
+		setIsLost(false);
+		setTimeLeft(timer);
+	}, [createRandomGrid, timer]);
 
-	const handleCellClick = useCallback((index: number) => {
-		setGrid((prevGrid) => {
-			const newGrid = [...prevGrid];
-			newGrid[index] = !newGrid[index];
+	const restartToInitial = useCallback(() => {
+		if (!initialGridRef.current) return;
+		setGrid([...initialGridRef.current]);
+		setSteps(0);
+		setIsWon(false);
+		setIsLost(false);
+		setTimeLeft(timer);
+	}, [timer]);
 
-			const neighbors = getNeighbors(index);
-			neighbors.forEach((neighborIndex) => {
-				newGrid[neighborIndex] = !newGrid[neighborIndex];
+	useEffect(() => {
+		startNewGame();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [size, timer]);
+
+	useEffect(() => {
+		if (timer === 0 || isWon || isLost) return;
+
+		if (timeLeft <= 0) {
+			setIsLost(true);
+			return;
+		}
+
+		const interval = setInterval(() => {
+			setTimeLeft((prev) => prev - 1);
+		}, 1000);
+
+		return () => clearInterval(interval);
+	}, [timer, timeLeft, isWon, isLost]);
+
+	const handleCellClick = useCallback(
+		(index: number) => {
+			if (isWon || isLost) return;
+
+			setGrid((prevGrid) => {
+				const newGrid = [...prevGrid];
+				newGrid[index] = !newGrid[index];
+				const neighbors = getNeighbors(index);
+				neighbors.forEach((neighborIndex) => {
+					newGrid[neighborIndex] = !newGrid[neighborIndex];
+				});
+
+				const allOff = newGrid.every((cell) => !cell);
+				if (allOff) {
+					setIsWon(true);
+				}
+
+				return newGrid;
 			});
 
-			const allOff = newGrid.every((cell) => !cell);
-			if (allOff) {
-				setIsWon(true);
-			}
-
-			return newGrid;
-		});
-
-		setSteps((prev) => prev + 1);
-	}, []);
-
-	const resetGame = useCallback(() => {
-		initializeGrid();
-	}, [initializeGrid]);
+			setSteps((prev) => prev + 1);
+		},
+		[getNeighbors, isWon, isLost],
+	);
 
 	return {
 		grid,
 		steps,
 		isWon,
+		isLost,
+		timeLeft,
 		handleCellClick,
-		resetGame,
+		startNewGame,
+		restartToInitial,
 	};
 };
 

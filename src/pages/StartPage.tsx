@@ -3,16 +3,22 @@ import ContainerLayout from "../layouts/ContainerLayout";
 
 interface StartPageProps {
 	onStart: () => void;
+	onOpenSettings?: () => void;
 }
 
-const StartPage = ({ onStart }: StartPageProps) => {
+const StartPage = ({ onStart, onOpenSettings }: StartPageProps) => {
 	return (
 		<ContainerLayout>
 			<h1 className="text-4xl font-bold mb-6">Lights Out</h1>
 			<p className="text-lg mb-8 text-gray-600">
 				Turn off all the lights with the minimum number of steps
 			</p>
-			<Button onClick={onStart}>Start Game</Button>
+			<div className="flex gap-3">
+				<Button onClick={onStart}>Start Game</Button>
+				<Button onClick={onOpenSettings} variant="secondary">
+					Settings
+				</Button>
+			</div>
 		</ContainerLayout>
 	);
 };

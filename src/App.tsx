@@ -1,39 +1,74 @@
 import usePageState from "./hooks/usePageState";
 import useGameLogic from "./hooks/useGameLogic";
+import useSettings from "./hooks/useSettings";
 import StartPage from "./pages/StartPage";
 import GamePage from "./pages/GamePage";
-import ResultsPage from "./pages/ResultsPage";
+import SettingsModal from "./components/ui/SettingsModal";
+import ResultsModal from "./components/ui/ResultsModal";
+import { useState } from "react";
 
 const App = () => {
-	const { currentPage, lastResult, goToGame, goToResults, goToStart } =
-		usePageState();
+	const { currentPage, goToGame, goToStart } = usePageState();
 
-	const gameLogic = useGameLogic();
+	const { settings, update: updateSettings } = useSettings();
+
+	const [showSettings, setShowSettings] = useState(false);
+	const [showResultsModal, setShowResultsModal] = useState(false);
+	const [didWin, setDidWin] = useState(false);
+
+	const gameLogic = useGameLogic(settings.size, settings.timer);
 
 	const handleStartGame = () => {
-		gameLogic.resetGame();
+		gameLogic.startNewGame();
 		goToGame();
 	};
 
-	const handleRestart = () => {
-		gameLogic.resetGame();
-		goToStart();
+	const handleGameWon = () => {
+		setDidWin(true);
+		setShowResultsModal(true);
+	};
+
+	const handleGameLost = () => {
+		setDidWin(false);
+		setShowResultsModal(true);
 	};
 
 	return (
 		<>
-			{currentPage === "start" && <StartPage onStart={handleStartGame} />}
+			{currentPage === "start" && (
+				<StartPage
+					onStart={handleStartGame}
+					onOpenSettings={() => setShowSettings(true)}
+				/>
+			)}
 			{currentPage === "game" && (
 				<GamePage
 					gameLogic={gameLogic}
-					onGameWon={() => goToResults(gameLogic.steps)}
-					onGameLost={() => goToResults(gameLogic.steps)}
+					timerEnabled={settings.timer > 0}
+					onGameWon={handleGameWon}
+					onGameLost={handleGameLost}
 				/>
 			)}
-			{currentPage === "results" && lastResult && (
-				<ResultsPage
-					onRestart={handleRestart}
-					steps={lastResult.steps}
+
+			{showSettings && (
+				<SettingsModal
+					defaultSettings={settings}
+					onClose={() => setShowSettings(false)}
+					onSave={(s) => updateSettings(s)}
+				/>
+			)}
+
+			{showResultsModal && (
+				<ResultsModal
+					isWin={didWin}
+					steps={gameLogic.steps}
+					onClose={() => setShowResultsModal(false)}
+					onNextRound={() => gameLogic.startNewGame()}
+					onRestartToInitial={() => gameLogic.restartToInitial()}
+					onGoToStart={() => {
+						setShowResultsModal(false);
+						goToStart();
+					}}
 				/>
 			)}
 		</>
