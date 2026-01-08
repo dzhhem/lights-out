@@ -1,29 +1,24 @@
 import { useNavigate } from "react-router";
 import Portal from "./Portal";
 import Button from "./Button";
+import { useResultsStore } from "../../store/results";
 
 type ResultsModalProps = {
-	isWin: boolean;
-	steps: number;
-	onClose: () => void;
 	onNextRound: () => void;
 	onRestartToInitial: () => void;
-	onGoToStart: () => void;
 };
 
 const ResultsModal = ({
-	isWin,
-	steps,
-	onClose,
 	onNextRound,
 	onRestartToInitial,
-	onGoToStart,
 }: ResultsModalProps) => {
 	const navigate = useNavigate();
+	const isWin = useResultsStore((state) => state.isWin);
+	const steps = useResultsStore((state) => state.steps);
+	const hideResults = useResultsStore((state) => state.hideResults);
 
 	const handleMainMenu = () => {
-		onGoToStart();
-		onClose();
+		hideResults();
 		navigate("/");
 	};
 
@@ -49,7 +44,7 @@ const ResultsModal = ({
 							<Button
 								onClick={() => {
 									onNextRound();
-									onClose();
+									hideResults();
 								}}
 							>
 								Next Round
@@ -60,7 +55,7 @@ const ResultsModal = ({
 								variant="secondary"
 								onClick={() => {
 									onRestartToInitial();
-									onClose();
+									hideResults();
 								}}
 							>
 								Restart

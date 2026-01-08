@@ -3,10 +3,12 @@ import { v4 as uuidv4 } from "uuid";
 import Button from "../components/ui/Button";
 import ContainerLayout from "../layouts/ContainerLayout";
 import { useAppContext } from "../context/AppContext";
+import { useSettingsStore } from "../store/settings";
 
 const StartPage = () => {
 	const navigate = useNavigate();
-	const { openSettings, gameLogic } = useAppContext();
+	const { gameLogic } = useAppContext();
+	const openSettings = useSettingsStore((state) => state.openSettings);
 
 	const handleStartGame = () => {
 		const userId = uuidv4();

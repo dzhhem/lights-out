@@ -6,29 +6,29 @@ import GameGrid from "../components/game/GameGrid";
 import StepCounter from "../components/game/StepCounter";
 import Timer from "../components/game/Timer";
 import { useAppContext } from "../context/AppContext";
+import { useSettingsStore } from "../store/settings";
+import { useResultsStore } from "../store/results";
 
 const GamePage = () => {
 	const { userId } = useParams<{ userId: string }>();
-	const { gameLogic, settings, setShowResultsModal, setDidWin } =
-		useAppContext();
+	const { gameLogic } = useAppContext();
+	const settings = useSettingsStore((state) => state.settings);
+	const showResults = useResultsStore((state) => state.showResults);
 
 	useEffect(() => {
 		if (gameLogic.isWon) {
-			setDidWin(true);
-			setShowResultsModal(true);
+			showResults({ isWin: true, steps: gameLogic.steps });
 		}
-	}, [gameLogic.isWon, setDidWin, setShowResultsModal]);
+	}, [gameLogic.isWon, gameLogic.steps, showResults]);
 
 	useEffect(() => {
 		if (gameLogic.isLost) {
-			setDidWin(false);
-			setShowResultsModal(true);
+			showResults({ isWin: false, steps: gameLogic.steps });
 		}
-	}, [gameLogic.isLost, setDidWin, setShowResultsModal]);
+	}, [gameLogic.isLost, gameLogic.steps, showResults]);
 
 	const handleGiveUp = () => {
-		setDidWin(false);
-		setShowResultsModal(true);
+		showResults({ isWin: false, steps: gameLogic.steps });
 	};
 
 	return (

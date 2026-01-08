@@ -3,12 +3,10 @@ import Button from "./Button";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { Settings } from "../../hooks/useSettings";
+import { useSettingsStore } from "../../store/settings";
 
 type SettingsModalProps = {
-	defaultSettings: Settings;
 	onClose: () => void;
-	onSave: (_settings: Settings) => void;
 };
 
 const schema = z.object({
@@ -23,11 +21,10 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
-const SettingsModal = ({
-	defaultSettings,
-	onClose,
-	onSave,
-}: SettingsModalProps) => {
+const SettingsModal = ({ onClose }: SettingsModalProps) => {
+	const settings = useSettingsStore((state) => state.settings);
+	const setSettings = useSettingsStore((state) => state.setSettings);
+
 	const {
 		register,
 		handleSubmit,
@@ -35,13 +32,13 @@ const SettingsModal = ({
 	} = useForm<FormData>({
 		resolver: zodResolver(schema),
 		defaultValues: {
-			size: defaultSettings.size,
-			timer: defaultSettings.timer,
+			size: settings.size,
+			timer: settings.timer,
 		},
 	});
 
 	const submit = (data: FormData) => {
-		onSave({ size: data.size, timer: data.timer });
+		setSettings({ size: data.size, timer: data.timer });
 		onClose();
 	};
 
