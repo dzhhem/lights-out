@@ -17,18 +17,30 @@ const GamePage = () => {
 
 	useEffect(() => {
 		if (gameLogic.isWon) {
-			showResults({ isWin: true, steps: gameLogic.steps });
+			showResults({
+				isWin: true,
+				steps: gameLogic.steps,
+				size: settings.size,
+			});
 		}
-	}, [gameLogic.isWon, gameLogic.steps, showResults]);
+	}, [gameLogic.isWon, gameLogic.steps, showResults, settings.size]);
 
 	useEffect(() => {
 		if (gameLogic.isLost) {
-			showResults({ isWin: false, steps: gameLogic.steps });
+			showResults({
+				isWin: false,
+				steps: gameLogic.steps,
+				size: settings.size,
+			});
 		}
-	}, [gameLogic.isLost, gameLogic.steps, showResults]);
+	}, [gameLogic.isLost, gameLogic.steps, showResults, settings.size]);
 
 	const handleGiveUp = () => {
-		showResults({ isWin: false, steps: gameLogic.steps });
+		showResults({
+			isWin: false,
+			steps: gameLogic.steps,
+			size: settings.size,
+		});
 	};
 
 	return (

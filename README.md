@@ -49,9 +49,13 @@ The game consists of a grid of lights that can be switched on or off.
     - **Description:** The project enforces code quality and consistent formatting using ESLint for linting and Prettier for code formatting. This ensures a uniform codebase and helps prevent common errors.
     - **Evidence:** `eslint.config.js`, `.prettierrc`, `.prettierignore`, `package.json` (for scripts).
 
-3. **Efficient State Management with Zustand**
-    - **Description:** Global state (like game settings and results) is managed by Zustand. It provides a simple and performant way to share state across components without prop-drilling.
-    - **Evidence:** `src/store/settings.ts` and `src/store/results.ts`.
+3. **Advanced State Management & Persistence with Zustand**
+    - **Description:** Global state is managed using Zustand with its `persist` middleware. This implementation ensures that game settings, player history, and active game sessions are preserved across page reloads, providing a seamless user experience.
+    - **Features:**
+        - **Session Recovery:** Active games (grid state, steps, timer) are saved in real-time, allowing players to resume exactly where they left off.
+        - **Game History:** Persistent log of the last 10 games played.
+        - **Personal Bests:** Tracks the minimum steps taken to win for each grid size.
+    - **Evidence:** `src/store/settings.ts`, `src/store/results.ts`, and `src/store/game.ts`.
 
 4. **Strong Typing with TypeScript**
     - **Description:** The entire codebase is written in TypeScript, providing type safety that prevents common bugs, improves code completion, and makes the code self-documenting.
