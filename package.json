@@ -7,8 +7,9 @@
   "type": "module",
   "scripts": {
     "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "lint": "eslint .",
-    "check": "npm run format && npm run lint",
+    "check": "npm run format:check && npm run lint",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview"
