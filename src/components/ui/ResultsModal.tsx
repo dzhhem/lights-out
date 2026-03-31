@@ -19,7 +19,7 @@ const ResultsModal = ({
 
   const handleMainMenu = () => {
     hideResults();
-    navigate("/");
+    navigate("/", { replace: true });
   };
 
   return (

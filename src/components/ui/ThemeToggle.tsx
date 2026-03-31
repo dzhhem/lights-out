@@ -1,8 +1,8 @@
-import { useSettingsStore } from "../../store/settings";
+import { useThemeStore } from "../../store/theme";
 
 const ThemeToggle = () => {
-  const theme = useSettingsStore((state) => state.settings.theme);
-  const toggleTheme = useSettingsStore((state) => state.toggleTheme);
+  const theme = useThemeStore((state) => state.theme);
+  const toggleTheme = useThemeStore((state) => state.toggleTheme);
 
   return (
     <button

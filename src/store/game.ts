@@ -42,12 +42,18 @@ export const useGameStore = create<GameSessionState>()(
         removeItem: (name) => localStorage.removeItem(name),
         setItem: (name, value) => {
           const parsed = JSON.parse(value);
+          const state = parsed.state;
           if (
-            parsed.state &&
-            parsed.state.grid &&
-            parsed.state.grid.length > 0
+            state &&
+            Array.isArray(state.grid) &&
+            state.grid.length > 0 &&
+            state.initialGrid !== null &&
+            !state.isWon &&
+            !state.isLost
           ) {
             localStorage.setItem(name, value);
+          } else {
+            localStorage.removeItem(name);
           }
         },
       })),

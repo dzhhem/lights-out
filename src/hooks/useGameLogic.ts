@@ -1,5 +1,6 @@
 import { useEffect, useCallback, useRef } from "react";
 import { useGameStore } from "../store/game";
+import { useResultsStore } from "../store/results";
 
 const useGameLogic = (size = 4, timer = 60) => {
   const COLS = size;
@@ -75,7 +76,36 @@ const useGameLogic = (size = 4, timer = 60) => {
     return newGrid;
   }, [getNeighbors, size]);
 
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const stopTimer = useCallback(() => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    localStorage.removeItem("lights-out-session");
+  }, []);
+
+  const createTimerInterval = useCallback(() => {
+    if (timer === 0) return;
+    intervalRef.current = setInterval(() => {
+      const state = useGameStore.getState();
+      if (state.isWon || state.isLost) {
+        stopTimer();
+        return;
+      }
+      if (state.timeLeft <= 0) {
+        setGameState({ isLost: true });
+        stopTimer();
+        return;
+      }
+      setGameState({ timeLeft: state.timeLeft - 1 });
+    }, 1000);
+  }, [timer, setGameState, stopTimer]);
+
   const startNewGame = useCallback(() => {
+    stopTimer();
+    useResultsStore.getState().hideResults();
     const g = createRandomGrid();
     setGameState({
       grid: g,
@@ -86,10 +116,19 @@ const useGameLogic = (size = 4, timer = 60) => {
       timeLeft: timer,
       activeSize: size,
     });
-  }, [createRandomGrid, timer, size, setGameState]);
+    createTimerInterval();
+  }, [
+    createRandomGrid,
+    timer,
+    size,
+    setGameState,
+    stopTimer,
+    createTimerInterval,
+  ]);
 
   const restartToInitial = useCallback(() => {
     if (!initialGridRef.current) return;
+    stopTimer();
     setGameState({
       grid: [...initialGridRef.current],
       steps: 0,
@@ -97,7 +136,8 @@ const useGameLogic = (size = 4, timer = 60) => {
       isLost: false,
       timeLeft: timer,
     });
-  }, [timer, setGameState]);
+    createTimerInterval();
+  }, [timer, setGameState, stopTimer, createTimerInterval]);
 
   useEffect(() => {
     if (grid.length > 0 && activeSize !== size) {
@@ -106,19 +146,17 @@ const useGameLogic = (size = 4, timer = 60) => {
   }, [size, activeSize, grid.length, startNewGame]);
 
   useEffect(() => {
-    if (timer === 0 || isWon || isLost || grid.length === 0) return;
-
-    if (timeLeft <= 0) {
-      setGameState({ isLost: true });
-      return;
+    if (grid.length > 0 && !isWon && !isLost) {
+      createTimerInterval();
     }
+    return () => stopTimer();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-    const interval = setInterval(() => {
-      setGameState({ timeLeft: timeLeft - 1 });
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [timer, timeLeft, isWon, isLost, grid.length, setGameState]);
+  const giveUp = useCallback(() => {
+    stopTimer();
+    setGameState({ isLost: true });
+  }, [stopTimer, setGameState]);
 
   const handleCellClick = useCallback(
     (index: number) => {
@@ -133,13 +171,17 @@ const useGameLogic = (size = 4, timer = 60) => {
 
       const allOff = newGrid.every((cell) => !cell);
 
+      if (allOff) {
+        stopTimer();
+      }
+
       setGameState({
         grid: newGrid,
         steps: steps + 1,
         isWon: allOff,
       });
     },
-    [getNeighbors, isWon, isLost, grid, steps, setGameState],
+    [getNeighbors, isWon, isLost, grid, steps, setGameState, stopTimer],
   );
 
   return {
@@ -151,6 +193,8 @@ const useGameLogic = (size = 4, timer = 60) => {
     handleCellClick,
     startNewGame,
     restartToInitial,
+    stopTimer,
+    giveUp,
   };
 };
 

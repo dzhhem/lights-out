@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useParams } from "react-router";
+import { useBlocker, useNavigate, useParams } from "react-router";
 import Button from "../components/ui/Button";
 import ContainerLayout from "../layouts/ContainerLayout";
 import GameGrid from "../components/game/GameGrid";
@@ -7,41 +7,21 @@ import StepCounter from "../components/game/StepCounter";
 import Timer from "../components/game/Timer";
 import { useAppContext } from "../context/AppContext";
 import { useSettingsStore } from "../store/settings";
-import { useResultsStore } from "../store/results";
 
 const GamePage = () => {
   const { userId } = useParams<{ userId: string }>();
   const { gameLogic } = useAppContext();
   const settings = useSettingsStore((state) => state.settings);
-  const showResults = useResultsStore((state) => state.showResults);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (gameLogic.isWon) {
-      showResults({
-        isWin: true,
-        steps: gameLogic.steps,
-        size: settings.size,
-      });
+    if (gameLogic.grid.length === 0) {
+      navigate("/", { replace: true });
     }
-  }, [gameLogic.isWon, gameLogic.steps, showResults, settings.size]);
+  }, [gameLogic.grid.length, navigate]);
 
-  useEffect(() => {
-    if (gameLogic.isLost) {
-      showResults({
-        isWin: false,
-        steps: gameLogic.steps,
-        size: settings.size,
-      });
-    }
-  }, [gameLogic.isLost, gameLogic.steps, showResults, settings.size]);
-
-  const handleGiveUp = () => {
-    showResults({
-      isWin: false,
-      steps: gameLogic.steps,
-      size: settings.size,
-    });
-  };
+  useBlocker(({ nextLocation }) => nextLocation.pathname !== "/");
 
   return (
     <ContainerLayout className="bg-gray-100 dark:bg-slate-900 transition-colors duration-300 p-4 justify-center">
@@ -71,7 +51,7 @@ const GamePage = () => {
 
       <div className="flex gap-4">
         <Button onClick={gameLogic.startNewGame}>New Game</Button>
-        <Button onClick={handleGiveUp} variant="secondary">
+        <Button onClick={gameLogic.giveUp} variant="secondary">
           Give Up
         </Button>
       </div>

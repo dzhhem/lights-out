@@ -27,7 +27,8 @@ const StartPage = () => {
     <ContainerLayout className="justify-center p-4">
       <div className="relative w-full max-w-2xl flex flex-col items-center">
         <h1 className="text-4xl font-bold mb-6 text-center dark:text-white">
-          Lights Out
+          Lights{" "}
+          <span className="text-yellow-600 dark:text-yellow-400">Out</span>
         </h1>
         <p className="text-lg mb-4 text-gray-600 dark:text-slate-400 text-center">
           Turn off all the lights with the minimum number of steps
