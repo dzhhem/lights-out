@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { persist, createJSONStorage } from "zustand/middleware";
 
 interface GameSessionState {
   grid: boolean[];
@@ -37,6 +37,26 @@ export const useGameStore = create<GameSessionState>()(
     }),
     {
       name: "lights-out-session",
+      storage: createJSONStorage(() => ({
+        getItem: (name) => localStorage.getItem(name),
+        removeItem: (name) => localStorage.removeItem(name),
+        setItem: (name, value) => {
+          const parsed = JSON.parse(value);
+          const state = parsed.state;
+          if (
+            state &&
+            Array.isArray(state.grid) &&
+            state.grid.length > 0 &&
+            state.initialGrid !== null &&
+            !state.isWon &&
+            !state.isLost
+          ) {
+            localStorage.setItem(name, value);
+          } else {
+            localStorage.removeItem(name);
+          }
+        },
+      })),
     },
   ),
 );

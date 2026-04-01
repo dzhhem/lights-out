@@ -9,9 +9,9 @@ const GameGrid = ({ grid, onCellClick }: GameGridProps) => {
   const size = Math.sqrt(grid.length);
 
   return (
-    <div className="bg-white p-8 rounded-lg shadow-lg">
+    <div className="w-full max-w-[min(85vw,500px)] mx-auto">
       <div
-        className="grid gap-2"
+        className="grid gap-1.5"
         style={{
           gridTemplateColumns: `repeat(${size}, minmax(0, 1fr))`,
         }}

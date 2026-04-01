@@ -9,7 +9,7 @@ const ContainerLayout = ({
 }: ContainerLayoutProps) => {
   return (
     <div
-      className={`flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4 ${className}`}
+      className={`flex flex-col items-center min-h-screen bg-gray-50 dark:bg-slate-900 dark:text-slate-100 transition-colors duration-300 ${className}`}
     >
       {children}
     </div>

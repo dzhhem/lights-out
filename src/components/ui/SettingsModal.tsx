@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import Portal from "./Portal";
 import Button from "./Button";
 import { useForm } from "react-hook-form";
@@ -23,7 +24,7 @@ type FormData = z.infer<typeof schema>;
 
 const SettingsModal = ({ onClose }: SettingsModalProps) => {
   const settings = useSettingsStore((state) => state.settings);
-  const setSettings = useSettingsStore((state) => state.setSettings);
+  const updateSettings = useSettingsStore((state) => state.updateSettings);
 
   const {
     register,
@@ -37,23 +38,37 @@ const SettingsModal = ({ onClose }: SettingsModalProps) => {
     },
   });
 
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleEsc);
+    return () => window.removeEventListener("keydown", handleEsc);
+  }, [onClose]);
+
   const submit = (data: FormData) => {
-    setSettings({ size: data.size, timer: data.timer });
+    updateSettings({ size: data.size, timer: data.timer });
     onClose();
   };
 
   return (
     <Portal>
-      <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-        <div className="bg-white p-6 rounded shadow-lg w-full max-w-sm">
-          <h2 className="text-xl font-bold mb-4">Settings</h2>
-          <form onSubmit={handleSubmit(submit)} className="space-y-4">
-            <label className="flex flex-col">
+      <div
+        className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4 backdrop-blur-sm cursor-pointer"
+        onClick={onClose}
+      >
+        <div
+          className="bg-white dark:bg-slate-800 dark:text-slate-100 p-6 rounded-xl shadow-2xl w-full max-w-sm transform transition-all cursor-default"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <h2 className="text-2xl font-bold mb-6">Settings</h2>
+          <form onSubmit={handleSubmit(submit)} className="space-y-6">
+            <label className="flex flex-col gap-2 font-medium">
               Grid size
               <select
                 {...register("size", { valueAsNumber: true })}
-                className={`mt-2 p-2 border rounded ${
-                  errors.size ? "border-red-500" : ""
+                className={`p-3 border rounded-lg bg-gray-50 dark:bg-slate-700 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 outline-none transition-all ${
+                  errors.size ? "border-red-500" : "border-gray-200"
                 }`}
               >
                 {[4, 5, 6, 7, 8].map((s) => (
@@ -63,30 +78,30 @@ const SettingsModal = ({ onClose }: SettingsModalProps) => {
                 ))}
               </select>
               {errors.size && (
-                <span className="text-red-500 text-sm mt-1">
+                <span className="text-red-500 text-sm">
                   {errors.size.message}
                 </span>
               )}
             </label>
 
-            <label className="flex flex-col">
+            <label className="flex flex-col gap-2 font-medium">
               Timer (seconds, 0 = no limit)
               <input
                 type="number"
                 min={0}
                 {...register("timer", { valueAsNumber: true })}
-                className={`mt-2 p-2 border rounded ${
-                  errors.timer ? "border-red-500" : ""
+                className={`p-3 border rounded-lg bg-gray-50 dark:bg-slate-700 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 outline-none transition-all ${
+                  errors.timer ? "border-red-500" : "border-gray-200"
                 }`}
               />
               {errors.timer && (
-                <span className="text-red-500 text-sm mt-1">
+                <span className="text-red-500 text-sm">
                   {errors.timer.message}
                 </span>
               )}
             </label>
 
-            <div className="flex gap-3 justify-end mt-2">
+            <div className="flex gap-3 justify-end pt-2">
               <Button type="button" variant="secondary" onClick={onClose}>
                 Cancel
               </Button>

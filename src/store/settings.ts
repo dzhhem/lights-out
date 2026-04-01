@@ -1,38 +1,37 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { Settings } from "../types/settings";
+import { type Settings } from "../types/settings";
 
 interface SettingsState {
   settings: Settings;
-  isSettingsOpen: boolean;
-  setSettings: (_newSettings: Settings) => void;
+  isOpen: boolean;
+  updateSettings: (_newSettings: Partial<Settings>) => void;
   openSettings: () => void;
   closeSettings: () => void;
 }
 
+const DEFAULT_SETTINGS: Settings = {
+  size: 4,
+  timer: 60,
+};
+
 export const useSettingsStore = create<SettingsState>()(
   persist(
     (set) => ({
-      settings: {
-        size: 4,
-        timer: 0,
-      },
-      isSettingsOpen: false,
-      setSettings: (newSettings) =>
+      settings: DEFAULT_SETTINGS,
+      isOpen: false,
+
+      updateSettings: (newSettings) =>
         set((state) => ({
-          settings: {
-            ...state.settings,
-            ...newSettings,
-          },
+          settings: { ...state.settings, ...newSettings },
         })),
-      openSettings: () => set({ isSettingsOpen: true }),
-      closeSettings: () => set({ isSettingsOpen: false }),
+
+      openSettings: () => set({ isOpen: true }),
+
+      closeSettings: () => set({ isOpen: false }),
     }),
     {
       name: "lights-out-settings",
-      partialize: (state) => ({
-        settings: state.settings,
-      }),
     },
   ),
 );
