@@ -105,7 +105,7 @@ const SettingsModal = ({ onClose }: SettingsModalProps) => {
               <Button type="button" variant="secondary" onClick={onClose}>
                 Cancel
               </Button>
-              <Button type="submit">Save Changes</Button>
+              <Button type="submit">Save</Button>
             </div>
           </form>
         </div>

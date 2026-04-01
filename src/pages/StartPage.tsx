@@ -70,39 +70,30 @@ const StartPage = () => {
                   {history.map((game) => (
                     <div
                       key={game.id}
-                      className="flex items-center justify-between p-3 bg-gray-50 dark:bg-slate-700/50 rounded-md border border-gray-100 dark:border-slate-700"
+                      className="flex items-center justify-between gap-3 p-3 bg-gray-50 dark:bg-slate-700/50 rounded-md border border-gray-100 dark:border-slate-700 text-sm"
                     >
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center pr-2 gap-2 shrink-0">
                         <div
-                          className={`w-2 h-2 rounded-full ${
-                            game.isWin ? "bg-green-500" : "bg-red-500"
-                          }`}
+                          className={`w-2 h-2 rounded-full ${game.isWin ? "bg-green-500" : "bg-red-500"}`}
                         />
                         <span
-                          className={`font-medium text-sm ${
-                            game.isWin
-                              ? "text-green-700 dark:text-green-400"
-                              : "text-red-700 dark:text-red-400"
-                          }`}
+                          className={`font-medium ${game.isWin ? "text-green-700 dark:text-green-400" : "text-red-700 dark:text-red-400"}`}
                         >
                           {game.isWin ? "WIN" : "LOSS"}
                         </span>
                       </div>
 
-                      <div className="grid grid-cols-[auto_auto_1fr] items-end gap-4 text-sm">
-                        <span className="text-gray-600 dark:text-slate-300">
+                      <div className="grid grid-cols-[80px_90px_auto] max-[426px]:grid-cols-[60px_60px] items-end gap-x-2 text-gray-600 dark:text-slate-300">
+                        <span className="text-right">
                           Size:{" "}
-                          <span className="font-bold w-12 inline-block">
+                          <span className="font-bold">
                             {game.size}x{game.size}
                           </span>
                         </span>
-                        <span className="text-gray-600 dark:text-slate-300">
-                          Steps:{" "}
-                          <span className="font-bold w-8 inline-block">
-                            {game.steps}
-                          </span>
+                        <span>
+                          Steps: <span className="font-bold">{game.steps}</span>
                         </span>
-                        <span className="text-gray-400 dark:text-slate-500 text-xs">
+                        <span className="hidden min-[426px]:block text-gray-400 dark:text-slate-500 text-xs">
                           {new Date(game.date).toLocaleDateString()}
                         </span>
                       </div>

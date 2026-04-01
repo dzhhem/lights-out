@@ -17,8 +17,8 @@ const NotFoundPage = () => {
   return (
     <ContainerLayout className="justify-center p-4">
       <div className="text-center">
-        <div className="flex items-center justify-center gap-3 select-none">
-          <span className="text-7xl sm:text-9xl font-bold leading-none tabular-nums">
+        <div className="flex items-center justify-center gap-2 sm:gap-3 select-none">
+          <span className="text-8xl sm:text-9xl font-bold leading-none tabular-nums">
             4
           </span>
           <div
@@ -26,11 +26,11 @@ const NotFoundPage = () => {
               isLightOn ? "animate-flicker" : ""
             }`}
           >
-            <div className="scale-100 sm:scale-125 transform-gpu">
+            <div className="scale-100 sm:scale-125 transform-gpu w-16 h-16 sm:w-18 sm:h-18">
               <Cell onClick={handleLightClick} isOn={isLightOn} />
             </div>
           </div>
-          <span className="text-7xl sm:text-9xl font-bold leading-none tabular-nums">
+          <span className="text-8xl sm:text-9xl font-bold leading-none tabular-nums">
             4
           </span>
         </div>

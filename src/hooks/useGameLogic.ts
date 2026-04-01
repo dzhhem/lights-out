@@ -171,15 +171,15 @@ const useGameLogic = (size = 4, timer = 60) => {
 
       const allOff = newGrid.every((cell) => !cell);
 
-      if (allOff) {
-        stopTimer();
-      }
-
       setGameState({
         grid: newGrid,
         steps: steps + 1,
         isWon: allOff,
       });
+
+      if (allOff) {
+        stopTimer();
+      }
     },
     [getNeighbors, isWon, isLost, grid, steps, setGameState, stopTimer],
   );

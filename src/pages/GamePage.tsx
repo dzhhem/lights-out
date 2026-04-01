@@ -25,13 +25,11 @@ const GamePage = () => {
 
   return (
     <ContainerLayout className="bg-gray-100 dark:bg-slate-900 transition-colors duration-300 p-4 justify-center">
-      <span className="text-sm text-gray-500 dark:text-slate-400 mb-2">
+      <span className="text-sm text-gray-500 dark:text-slate-400 mb-3">
         Player: {userId?.slice(0, 8)}...
       </span>
 
-      <h1 className="text-3xl font-bold mb-6 dark:text-white">Game</h1>
-
-      <div className="flex gap-8 mb-8 items-center justify-center bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 transition-colors">
+      <div className="flex gap-8 mb-5 items-center justify-center bg-white dark:bg-slate-800 px-4 py-2 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 transition-colors">
         <div className="flex flex-col items-center">
           <StepCounter steps={gameLogic.steps} />
         </div>
@@ -42,7 +40,7 @@ const GamePage = () => {
         )}
       </div>
 
-      <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-xl mb-8 border border-gray-100 dark:border-slate-700 transition-colors">
+      <div className="w-full max-w-lg bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-xl mb-4 border border-gray-100 dark:border-slate-700 transition-colors flex justify-center">
         <GameGrid
           grid={gameLogic.grid}
           onCellClick={gameLogic.handleCellClick}
