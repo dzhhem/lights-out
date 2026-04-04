@@ -1,3 +1,4 @@
+import React from "react";
 import { useNavigate } from "react-router";
 import { v4 as uuidv4 } from "uuid";
 import Button from "../components/ui/Button";
@@ -66,13 +67,10 @@ const StartPage = () => {
                   </button>
                 </div>
 
-                <div className="space-y-3">
+                <div className="grid gap-y-3 grid-cols-[auto_max-content_max-content_auto] max-[426px]:grid-cols-[auto_max-content_max-content]">
                   {history.map((game) => (
-                    <div
-                      key={game.id}
-                      className="flex items-center justify-between gap-3 p-3 bg-gray-50 dark:bg-slate-700/50 rounded-md border border-gray-100 dark:border-slate-700 text-sm"
-                    >
-                      <div className="flex items-center pr-2 gap-2 shrink-0">
+                    <React.Fragment key={game.id}>
+                      <div className="flex items-center pr-2 gap-2 shrink-0 pl-3 py-3 bg-gray-50 dark:bg-slate-700/50 rounded-l-md border-y border-l border-gray-100 dark:border-slate-700 text-sm">
                         <div
                           className={`w-2 h-2 rounded-full ${game.isWin ? "bg-green-500" : "bg-red-500"}`}
                         />
@@ -83,21 +81,22 @@ const StartPage = () => {
                         </span>
                       </div>
 
-                      <div className="grid grid-cols-[80px_90px_auto] max-[426px]:grid-cols-[60px_60px] items-end gap-x-2 text-gray-600 dark:text-slate-300">
-                        <span className="text-right">
-                          Size:{" "}
-                          <span className="font-bold">
-                            {game.size}x{game.size}
-                          </span>
-                        </span>
-                        <span>
-                          Steps: <span className="font-bold">{game.steps}</span>
-                        </span>
-                        <span className="hidden min-[426px]:block text-gray-400 dark:text-slate-500 text-xs">
-                          {new Date(game.date).toLocaleDateString()}
+                      <div className="flex items-center px-2 py-3 bg-gray-50 dark:bg-slate-700/50 border-y border-gray-100 dark:border-slate-700 text-sm text-gray-600 dark:text-slate-300">
+                        Size:{" "}
+                        <span className="font-bold ml-1">
+                          {game.size}x{game.size}
                         </span>
                       </div>
-                    </div>
+
+                      <div className="flex items-center px-2 py-3 bg-gray-50 dark:bg-slate-700/50 border-y border-gray-100 dark:border-slate-700 text-sm text-gray-600 dark:text-slate-300 max-[426px]:rounded-r-md max-[426px]:border-r max-[426px]:pr-3">
+                        Steps:{" "}
+                        <span className="font-bold ml-1">{game.steps}</span>
+                      </div>
+
+                      <div className="flex items-center justify-end pr-3 py-3 bg-gray-50 dark:bg-slate-700/50 rounded-r-md border-y border-r border-gray-100 dark:border-slate-700 text-xs text-gray-400 dark:text-slate-500 max-[426px]:hidden">
+                        {new Date(game.date).toLocaleDateString()}
+                      </div>
+                    </React.Fragment>
                   ))}
                 </div>
               </div>
