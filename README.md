@@ -19,13 +19,16 @@ The game consists of a grid of lights that can be switched on or off.
 - **Routing:** React Router
 - **State Management:** Zustand
 - **Testing:** Jest, React Testing Library
+- **Containerization:** Docker, Docker Compose
 
 ## 🚀 How to launch a project
+
+### Without Docker (requires Node.js)
 
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/vt231dmyu/lights-out
+   git clone <repository-url>
    cd lights-out
    ```
 
@@ -36,9 +39,48 @@ The game consists of a grid of lights that can be switched on or off.
    ```
 
 3. **Start the project**
+
    ```bash
    npm run dev
    ```
+
+### With Docker (requires only Docker)
+
+1. **Clone the repository**
+
+   ```bash
+   git clone <repository-url>
+   cd lights-out
+   ```
+
+2. **Start development server**
+
+   ```bash
+   docker compose up -d dev
+   ```
+
+App will be available at `http://localhost:5173`
+
+3. **Run npm commands inside the container**
+
+   ```bash
+   docker compose exec dev npm run test
+   docker compose exec dev npm run tidy
+   ```
+
+4. **Preview production build locally**
+
+   ```bash
+   docker compose up -d prod
+   ```
+
+5. **Rebuild after code changes**
+
+   ```bash
+   docker compose up -d prod --build
+   ```
+
+App will be available at `http://localhost:80`
 
 ## ✨ Implemented best practises
 
@@ -77,3 +119,10 @@ The game consists of a grid of lights that can be switched on or off.
 7. **Testing**
    - **Description:** The project includes unit and component tests written with Jest and React Testing Library, covering core game logic, Zustand stores, and UI components.
    - **Evidence:** `src/hooks/__tests__/`, `src/store/__tests__/`, `src/components/**/__tests__/`.
+
+8. **Containerization with Docker**
+   - **Description:** The project includes a multi-stage Dockerfile and Docker Compose configuration, allowing development and production environments to run without installing Node.js locally.
+   - **Features:**
+     - **Dev container:** Vite dev server with hot reload and volume mounting for live code updates.
+     - **Prod container:** Optimized production build served via Nginx.
+   - **Evidence:** `Dockerfile`, `compose.yaml`, `nginx.conf`, `.dockerignore`.
