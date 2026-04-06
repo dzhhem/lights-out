@@ -28,10 +28,14 @@ COPY . .
 
 RUN npm run build
 
+RUN mkdir -p /app/dist-final/lights-out && \
+    cp -r /app/dist/. /app/dist-final/lights-out/ && \
+    cp /app/dist/index.html /app/dist-final/index.html
+
 # ─── Stage 3: Production ─────────────────────────────────────────────────────
 FROM nginx:alpine AS prod
 
-COPY --from=builder /app/dist /usr/share/nginx/html
+COPY --from=builder /app/dist-final /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
