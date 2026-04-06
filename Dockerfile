@@ -3,6 +3,8 @@ FROM node:20-alpine AS dev
 
 WORKDIR /app
 
+RUN apk add --no-cache bash
+
 COPY package*.json ./
 RUN npm ci
 
@@ -16,6 +18,8 @@ CMD ["npm", "run", "dev", "--", "--host"]
 FROM node:20-alpine AS builder
 
 WORKDIR /app
+
+RUN apk add --no-cache bash
 
 COPY package*.json ./
 RUN npm ci

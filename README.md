@@ -72,13 +72,13 @@ App will be available at `http://localhost:5173`
 4. **Preview production build locally**
 
    ```bash
-   docker compose up -d prod
+   docker compose --profile prod up -d prod
    ```
 
 5. **Rebuild after code changes**
 
    ```bash
-   docker compose up -d prod --build
+   docker compose --profile prod up -d prod --build
    ```
 
 App will be available at `http://localhost:80`
