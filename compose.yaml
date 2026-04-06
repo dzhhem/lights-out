@@ -3,6 +3,7 @@ services:
     build:
       context: .
       target: dev
+    container_name: lights-out-dev
     ports:
       - "5173:5173"
     volumes:
@@ -15,7 +16,10 @@ services:
     build:
       context: .
       target: prod
+    container_name: lights-out-prod
     ports:
       - "80:80"
     environment:
       - NODE_ENV=production
+    profiles:
+      - prod
