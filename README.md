@@ -20,6 +20,7 @@ The game consists of a grid of lights that can be switched on or off.
 - **State Management:** Zustand
 - **Testing:** Jest, React Testing Library
 - **Containerization:** Docker, Docker Compose
+- **CI/CD:** GitHub Actions
 
 ## 🚀 How to launch a project
 
@@ -126,3 +127,11 @@ App will be available at `http://localhost:80`
      - **Dev container:** Vite dev server with hot reload and volume mounting for live code updates.
      - **Prod container:** Optimized production build served via Nginx.
    - **Evidence:** `Dockerfile`, `compose.yaml`, `nginx.conf`, `.dockerignore`.
+
+9. **CI/CD with GitHub Actions**
+   - **Description:** The project includes automated workflows for continuous integration and deployment using GitHub Actions with a reusable composite action for Node.js setup.
+   - **Features:**
+     - **CI:** Runs on every push and pull request — checks formatting, linting, tests, and build. Deploy job is blocked until all checks pass.
+     - **Deploy:** Automatically deploys to GitHub Pages on every push to `main`.
+     - **Reusable action:** Node.js setup and dependency installation are extracted into `.github/actions/setup-node` to avoid duplication.
+   - **Evidence:** `.github/workflows/ci.yml`, `.github/workflows/deploy.yml`, `.github/actions/setup-node/action.yml`.
