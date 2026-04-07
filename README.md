@@ -1,6 +1,6 @@
 # 💡 Lights Out Game
 
-[![CI](https://github.com/vt231dmyu/lights-out/actions/workflows/ci.yml/badge.svg)](https://github.com/vt231dmyu/lights-out/actions/workflows/ci.yml)
+[![CI](https://github.com/makrdzr/lights-out/actions/workflows/ci.yml/badge.svg)](https://github.com/makrdzr/lights-out/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
 Logic puzzle game "Lights Out".
@@ -8,7 +8,7 @@ Implemented on React + TypeScript + Vite.
 
 ---
 
-### 🔗 [🕹 LIVE DEMO](https://vt231dmyu.github.io/lights-out/)
+### 🔗 [🕹 LIVE DEMO](https://makrdzr.github.io/lights-out/)
 
 ---
 
