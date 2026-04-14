@@ -67,26 +67,14 @@ To ensure a professional feel, the application features a custom 404 page where 
 
 ## 🚀 How to launch a project
 
-### Without Docker (requires Node.js)
+### Pull from GHCR (requires only Docker)
 
-1. **Clone the repository**
+```bash
+docker pull ghcr.io/dzhhem/lights-out:latest
+docker run -p 80:80 --name lights-out ghcr.io/dzhhem/lights-out:latest
+```
 
-   ```bash
-   git clone <repository-url>
-   cd lights-out
-   ```
-
-2. **Install dependencies**
-
-   ```bash
-   npm install
-   ```
-
-3. **Start the project**
-
-   ```bash
-   npm run dev
-   ```
+App will be available at [http://localhost:80/lights-out/](http://localhost:80/lights-out/)
 
 ### With Docker (requires only Docker)
 
@@ -125,6 +113,27 @@ App will be available at [http://localhost:5173/lights-out/](http://localhost:51
    ```
 
 App will be available at [http://localhost:80/lights-out/](http://localhost:80/lights-out/)
+
+### Without Docker (requires Node.js)
+
+1. **Clone the repository**
+
+   ```bash
+   git clone <repository-url>
+   cd lights-out
+   ```
+
+2. **Install dependencies**
+
+   ```bash
+   npm install
+   ```
+
+3. **Start the project**
+
+   ```bash
+   npm run dev
+   ```
 
 ---
 
